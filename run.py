@@ -165,6 +165,52 @@ def get_task_by_id(task_id):
             return task
     return None
 
+def update_task_status():
+    """
+    Prompts the user for a Task ID and toggles its 'done' status in the local data
+    and then updates the corresponding cell in the Google Sheet.
+    """
+    while True:
+        task_id_input = input("Enter the ID of the task to update (or 'q' to quit): ").strip()
+        
+        if task_id_input.lower() == 'q':
+            print("Status update cancelled.")
+            return
+
+        target_task = get_task_by_id(task_id_input)
+        
+        if target_task:
+            break
+        else:
+            print(f"Task with ID '{task_id_input}' not found. Please try again.")
+            continue
+            
+    # 1. Determine new status and value for the Sheet
+    old_status = target_task['done']
+    new_status = not old_status
+    sheet_value = '1' if new_status else '0'
+    status_text = "DONE" if new_status else "PENDING"
+    
+    # 2. Update the local TASK_DATA
+    target_task['done'] = new_status
+    print(f"Status changed locally. Task ID {target_task['id']} is now {status_text}.")
+
+    # 3. Find the row index in the Google Sheet
+    try:
+        # Find the cell matching the ID in the first column
+        cell = tasks.find(str(target_task['id']), in_column=1)
+        
+        # Update the 'done' column (which is the 4th column, index 4 in gspread)
+        tasks.update_cell(cell.row, 4, sheet_value)
+        
+        print(f"✅ SUCCESS: Google Sheet updated. Status for ID {target_task['id']} set to {status_text}.")
+        
+    except Exception as e:
+        print(f"\n❌ ERROR: Failed to update Google Sheet cell. {e}")
+        # Revert local change if sheet update failed to maintain consistency
+        target_task['done'] = old_status
+        print("Local change reverted due to sheet error.")
+
 def initial_prompt():
     """
     Asks the user whether they want to add a new task or view the list.
@@ -186,11 +232,9 @@ def initial_prompt():
             change_status = input("\nDo you want to change the status of a task (mark as done/pending)? (y/n): ").lower().strip()
             
             if change_status == 'y':
-                # Redirect to status change logic (to be implemented next)
-                print("\n--- Changing Task Status ---")
-                # We'll call the update_status() function here later
-                print("Status update function will be called here.")
-                break # Exit loop after handling 'y'
+                update_task_status() 
+                display_tasks()
+                break
             elif change_status == 'n':
                 print("Returning to application exit point.")
                 break # Exit and let the main flow conclude
