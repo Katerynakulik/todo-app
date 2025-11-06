@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import gspread
 from google.oauth2.service_account import Credentials
 import sys
@@ -94,11 +95,8 @@ def display_tasks():
         print(f"| {task['id']:<3} | {priority_text:<8} | {status:<6} | {task['task']:<25} |")
     print("-" * 55)
 
-
 def get_new_task_details():
-    """
-    Prompts the user for a new task's description and priority.
-    """
+    """Prompts the user for a new task's description and priority."""
     
     # 1. Get Task Description
     task_description = input("Enter task description: ").strip()
@@ -120,18 +118,52 @@ def get_new_task_details():
             
     return task_description, priority
 
+
+def create_task():
+    """
+    Handles the creation of a new task, assigns a unique ID, and updates the Sheet.
+    """
+    global TASK_DATA
+    
+    task_description, priority = get_new_task_details()
+
+    # 1. Determine the New ID
+    new_id = max(t['id'] for t in TASK_DATA) + 1 if TASK_DATA else 1
+
+    # 2. Prepare the new row for Google Sheet (must be a list of strings)
+    new_task_row = [str(new_id), task_description, str(priority), '0']
+
+    # 3. Append the new row to Google Sheet
+    try:
+        # Appending a row to the end of the sheet
+        tasks.append_row(new_task_row)
+        print(f"\n✅ SUCCESS: Task ID {new_id} ('{task_description}') created and added to Google Sheet.")
+        
+        # 4. Update local data (TASK_DATA) immediately without reloading the whole sheet
+        new_task_dict = {
+            'id': new_id, 
+            'task': task_description, 
+            'priority': priority, 
+            'done': False # False corresponds to '0'
+        }
+        TASK_DATA.append(new_task_dict)
+        
+    except Exception as e:
+        print(f"\n❌ ERROR: Failed to add task to Google Sheet. {e}")
+
+
 def initial_prompt():
-    """Asks the user whether they want to add a new task or view the list."""
+    """
+    Asks the user whether they want to add a new task or view the list.
+    """
     
     while True:
         choice = input("\nDo you want to add a new task? (y/n): ").lower().strip()
         
         if choice == 'y':
-            # Redirect to task creation logic (to be implemented next)
-            print("\n--- Adding New Task ---")
-            # We'll call the create_task() function here later
-            print("Constructor for new task will be called here.") 
-            break # Exit loop after handling 'y'
+            create_task() 
+            display_tasks() 
+            break
             
         elif choice == 'n':
             # Display tasks, then ask about status change
