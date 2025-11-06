@@ -71,3 +71,25 @@ def load_data_from_sheet():
 
     print(f"✅ Data loaded successfully. Total tasks: {len(TASK_DATA)}")
     return True
+
+def display_tasks():
+    """Reads and displays all current tasks in a user-friendly format."""
+    
+    if not TASK_DATA:
+        print("\n--- To-Do List is Empty! ---")
+        return
+
+    print("\n--- Current To-Do List ---")
+    print("-" * 55)
+    print(f"| {'ID':<3} | {'PRIORITY':<8} | {'STATUS':<6} | {'TASK DESCRIPTION':<25} |")
+    print("-" * 55)
+    
+    # Sort by done status (False/Pending first) and then by priority (1 is highest)
+    sorted_tasks = sorted(TASK_DATA, key=lambda x: (x['done'], x['priority']))
+    
+    for task in sorted_tasks:
+        status = "✅ DONE" if task['done'] else "⬜ PEND"
+        # Displaying 'priority' as text for better readability
+        priority_text = {1: 'HIGH', 2: 'MEDIUM', 3: 'LOW'}.get(task['priority'], 'N/A')
+        print(f"| {task['id']:<3} | {priority_text:<8} | {status:<6} | {task['task']:<25} |")
+    print("-" * 55)
