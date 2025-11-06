@@ -36,7 +36,7 @@ def load_data_from_sheet():
     
     try:
         # 1. Fetch all values (list of lists)
-        all_values = TASKS_SHEET.get_all_values()
+        all_values = tasks.get_all_values()
     except Exception as e:
         print(f"Error fetching data: {e}")
         return False
@@ -93,3 +93,76 @@ def display_tasks():
         priority_text = {1: 'HIGH', 2: 'MEDIUM', 3: 'LOW'}.get(task['priority'], 'N/A')
         print(f"| {task['id']:<3} | {priority_text:<8} | {status:<6} | {task['task']:<25} |")
     print("-" * 55)
+
+
+def get_new_task_details():
+    """
+    Prompts the user for a new task's description and priority.
+    """
+    
+    # 1. Get Task Description
+    task_description = input("Enter task description: ").strip()
+    while not task_description:
+        print("Task description cannot be empty.")
+        task_description = input("Enter task description: ").strip()
+
+    # 2. Get Task Priority
+    while True:
+        try:
+            priority_input = input("Enter priority (1=HIGH, 2=MEDIUM, 3=LOW): ").strip()
+            priority = int(priority_input)
+            if 1 <= priority <= 3:
+                break
+            else:
+                print("Priority must be 1, 2, or 3.")
+        except ValueError:
+            print("Invalid input. Please enter a number (1, 2, or 3).")
+            
+    return task_description, priority
+
+def initial_prompt():
+    """Asks the user whether they want to add a new task or view the list."""
+    
+    while True:
+        choice = input("\nDo you want to add a new task? (y/n): ").lower().strip()
+        
+        if choice == 'y':
+            # Redirect to task creation logic (to be implemented next)
+            print("\n--- Adding New Task ---")
+            # We'll call the create_task() function here later
+            print("Constructor for new task will be called here.") 
+            break # Exit loop after handling 'y'
+            
+        elif choice == 'n':
+            # Display tasks, then ask about status change
+            display_tasks()
+            
+            # Logic to ask about changing task status
+            change_status = input("\nDo you want to change the status of a task (mark as done/pending)? (y/n): ").lower().strip()
+            
+            if change_status == 'y':
+                # Redirect to status change logic (to be implemented next)
+                print("\n--- Changing Task Status ---")
+                # We'll call the update_status() function here later
+                print("Status update function will be called here.")
+                break # Exit loop after handling 'y'
+            elif change_status == 'n':
+                print("Returning to application exit point.")
+                break # Exit and let the main flow conclude
+            else:
+                print("Invalid input. Please enter 'y' or 'n'.")
+                continue # Re-ask about status change
+        else:
+            print("Invalid input. Please enter 'y' or 'n'.")
+
+
+# --- APPLICATION START ---
+if __name__ == "__main__":
+    print("Welcome to the To-Do List Manager!")
+    
+    # Attempt to load data at the start
+    if load_data_from_sheet():
+        initial_prompt() 
+    
+    print("Application finished.")
+    sys.exit()
