@@ -256,37 +256,43 @@ def delete_task_by_id():
         print(f"\n❌ ERROR: Failed to delete row from Google Sheet. {e}")
 
 def initial_prompt():
-    """
-    Asks the user whether they want to add a new task or view the list.
-    """
+    """Asks the user whether they want to add, update, delete a task or view the list."""
     
     while True:
-        choice = input("\nDo you want to add a new task? (y/n): ").lower().strip()
+        # Display tasks before asking for action
+        display_tasks()
         
-        if choice == 'y':
+        # Offer main options
+        print("\n--- Available Actions ---")
+        print("1: Add a new task")
+        print("2: Change status (Mark as Done/Pending)")
+        print("3: Delete a task")
+        print("q: Quit")
+        print("-------------------------")
+        
+        choice = input("Enter your choice (1/2/3/q): ").lower().strip()
+        
+        if choice == '1':
             create_task() 
-            display_tasks() 
-            break
             
-        elif choice == 'n':
-            # Display tasks, then ask about status change
-            display_tasks()
-            
-            # Logic to ask about changing task status
-            change_status = input("\nDo you want to change the status of a task (mark as done/pending)? (y/n): ").lower().strip()
-            
-            if change_status == 'y':
-                update_task_status() 
-                display_tasks()
-                break
-            elif change_status == 'n':
-                print("Returning to application exit point.")
-                break # Exit and let the main flow conclude
+        elif choice == '2':
+            if TASK_DATA:
+                update_task_status()
             else:
-                print("Invalid input. Please enter 'y' or 'n'.")
-                continue # Re-ask about status change
+                print("Cannot update status: To-Do List is empty.")
+                
+        elif choice == '3':
+            if TASK_DATA:
+                delete_task_by_id()
+            else:
+                print("Cannot delete: To-Do List is empty.")
+                
+        elif choice == 'q':
+            print("Exiting application...")
+            break 
+            
         else:
-            print("Invalid input. Please enter 'y' or 'n'.")
+            print("Invalid input. Please enter 1, 2, 3, or q.")
 
 
 # --- APPLICATION START ---
