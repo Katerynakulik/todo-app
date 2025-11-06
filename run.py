@@ -211,6 +211,50 @@ def update_task_status():
         target_task['done'] = old_status
         print("Local change reverted due to sheet error.")
 
+def delete_task_by_id():
+    """
+    Prompts the user for a Task ID and deletes it from the local data 
+    and the Google Sheet.
+    """
+    global TASK_DATA
+    
+    while True:
+        task_id_input = input("Enter the ID of the task to DELETE (or 'q' to quit): ").strip()
+        
+        if task_id_input.lower() == 'q':
+            print("Deletion cancelled.")
+            return
+
+        target_task = get_task_by_id(task_id_input) 
+        
+        if target_task:
+            break
+        else:
+            print(f"Task with ID '{task_id_input}' not found. Please try again.")
+            continue
+
+    task_id = target_task['id']
+    task_description = target_task['task']
+    
+    # Find the row index in the Google Sheet
+    try:
+        # Find the cell matching the ID in the first column
+        cell = tasks.find(str(task_id), in_column=1)
+        row_to_delete = cell.row
+        
+        # Delete the row from the Google Sheet
+        tasks.delete_rows(row_to_delete)
+        print(f"\n✅ SUCCESS: Task ID {task_id} ('{task_description}') deleted from Google Sheet.")
+        
+        # Update the local TASK_DATA
+        TASK_DATA = [t for t in TASK_DATA if t['id'] != task_id]
+        print(f"Local data updated. Total tasks remaining: {len(TASK_DATA)}")
+        
+    except gspread.exceptions.CellNotFound:
+        print(f"\n❌ ERROR: Task ID {task_id} found locally but not in the Sheet. Please reload data.")
+    except Exception as e:
+        print(f"\n❌ ERROR: Failed to delete row from Google Sheet. {e}")
+
 def initial_prompt():
     """
     Asks the user whether they want to add a new task or view the list.
