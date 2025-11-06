@@ -151,6 +151,19 @@ def create_task():
     except Exception as e:
         print(f"\n❌ ERROR: Failed to add task to Google Sheet. {e}")
 
+def get_task_by_id(task_id):
+    """
+    Searches the local TASK_DATA list for a task with the given ID.
+    """
+    try:
+        task_id = int(task_id)
+    except ValueError:
+        return None
+        
+    for task in TASK_DATA:
+        if task['id'] == task_id:
+            return task
+    return None
 
 def initial_prompt():
     """
