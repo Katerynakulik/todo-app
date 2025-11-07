@@ -183,10 +183,17 @@ Heroku cannot store files like `creds.json`. To grant your deployed app access t
 2.  **Key:** Enter `CREDS_JSON`.
 3.  **Value:** Copy the **entire text** content of your local `creds.json` file (including all formatting and curly braces `{}`) and paste it here.
 
-### 4. Final Deploy and Launch
+### 4. Final Deploy and Interaction
 
-1.  **Final Commit:** Ensure all project files, including `Procfile` and the clean `run.py` (free of commented-out code, satisfying **Criterion 9.2**), are committed to GitHub.
-2.  **Deploy:** Trigger a manual or automatic deployment on Heroku.
-3.  **Run Worker Dyno:** After the build is successful, go to the **Resources** tab and ensure the **worker dyno** is turned **On**.
+1.  **Final Commit:** Ensure all project files, including `Procfile` and the clean `run.py`, are committed to GitHub.
+2.  **Deploy:** Trigger the deployment on Heroku.
+3.  **Interaction Method (CRITICAL):** Since this is a CLI application, you **cannot** interact with it via the standard Heroku logs or a web browser.
 
-Your To-Do List Manager is now successfully deployed and ready to execute commands via the Heroku worker logs.
+    - You must use the **Heroku CLI** to launch an interactive session (One-Off Dyno).
+    - **Command to run the application:**
+      ```bash
+      heroku run python run.py --app YOUR_APP_NAME
+      ```
+    - This command opens a temporary, interactive terminal connected to your application, allowing you to use all menu options (1, 2, 3, q).
+
+4.  **Optional: Disable Worker Dyno:** If you are not running continuous background tasks, you should **disable** the Worker Dyno in the **Resources** tab to prevent constant crashes and save free dyno hours.
