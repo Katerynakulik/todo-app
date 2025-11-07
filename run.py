@@ -1,7 +1,8 @@
-# -*- coding: utf-8 -*-
 import gspread
 from google.oauth2.service_account import Credentials
 import sys
+import os
+import json
 
 SCOPE = [
     "https://www.googleapis.com/auth/spreadsheets",
@@ -9,18 +10,36 @@ SCOPE = [
     "https://www.googleapis.com/auth/drive"
     ]
 
+# This block is universal, supporting both local creds.json
+# and Heroku Config Vars (CREDS_JSON).
+
 try:
-    # Authorization using the creds.json file
-    CREDS = Credentials.from_service_account_file('creds.json')
+    # 1. Attempt to read credentials from Heroku environment variable
+    creds_json_data = os.environ.get("CREDS_JSON")
+
+    if creds_json_data:
+        # If variable exists, load JSON from the string
+        CREDS_INFO = json.loads(creds_json_data)
+        CREDS = Credentials.from_service_account_info(CREDS_INFO)
+    else:
+        # If variable not found (running locally), load from file
+        CREDS = Credentials.from_service_account_file('creds.json')
+
+    # 2. Authorize client
     SCOPED_CREDS = CREDS.with_scopes(SCOPE)
     GSPREAD_CLIENT = gspread.authorize(SCOPED_CREDS)
+
+    # 3. Open the sheet and worksheet
     SHEET = GSPREAD_CLIENT.open('to_do_list')
     tasks = SHEET.worksheet('tasks')
+
 except FileNotFoundError:
-    print("❌ ERROR: 'creds.json' not found.")
+    print("❌ ERROR: 'creds.json' not found locally.")
+    print("Ensure the file is in the project root.")
     sys.exit()
 except Exception as e:
-    print(f"❌ ERROR connecting to Google Sheets: {e}")
+    print(f"❌ ERROR connecting to Google Sheets. Details: {e}")
+    print("Check Heroku 'CREDS_JSON' value or local internet connection.")
     sys.exit()
 
     # --- GLOBAL DATA ---
