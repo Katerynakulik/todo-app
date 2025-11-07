@@ -166,10 +166,6 @@ Before starting the deployment, ensure the following files are committed to your
 
 The `Procfile` (no file extension) must be in the root directory. It instructs Heroku on the command to execute to start your CLI application:
 
-```bash
-    python3 -m venv .venv
-```
-
 ### 2. Configure Heroku Application
 
 1.  **Create App:** Log in to Heroku and create a new application, connecting it to your GitHub repository.
