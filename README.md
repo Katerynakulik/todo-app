@@ -90,3 +90,103 @@ This screenshot verifies the successful deletion of a task using its ID, which a
 ![Screenshot showing the application exit prompt](assets/exit.png)
 
 This shows the user successfully exiting the interactive application loop.
+
+## 🔬 Code Validation (PEP8 Compliance)
+
+The application code has been verified against Python's official style guide (PEP8) using a CI Python Linter.
+
+![Screenshot of the CI Python Linter showing "All clear, no errors found"](assets/linter_clear.png)
+
+## 🛠️ Setup and Installation
+
+### 1. Prerequisites
+
+You must have the following installed:
+
+- Python 3.12 (or higher)
+- Git
+
+### 2. Google Sheets API Setup
+
+his application requires its own dedicated Google Sheet for data persistence via the Service Account credentials.
+
+### Prerequisites
+
+1.  **Duplicate the Template:** Start by duplicating the required spreadsheet template to your own Google Drive account:
+    - **Template Link:** `https://docs.google.com/spreadsheets/d/1ueEQWwzt-iExx6UG-43zQf2hOgGXsswGgNoMfznSguE/edit?usp=sharing`
+    - **IMPORTANT:** After duplicating, ensure you use **your new spreadsheet's unique URL** for all subsequent steps.
+2.  **Verify Worksheet:** Ensure the first worksheet in your copy is named **`tasks`** and has the mandatory headers in the first row: `id`, `task`, `priority`, `done`.
+
+### API Access and Authentication
+
+1.  **Enable API Access:**
+    - Go to the Google Cloud Console.
+    - Enable the **Google Drive API** and **Google Sheets API** for your project.
+2.  **Create Service Account Key:**
+    - Create a new Service Account and download the JSON key file.
+    - **Rename this file to `creds.json`** and place it in the root directory of this project.
+3.  **Share Your Sheet:** **Share** **your duplicated Google Sheet** with the **client email address** found in your `creds.json` file. Grant **Editor** access.
+
+### 3. Running the Application Locally
+
+1.  **Clone the Repository:**
+    ```bash
+    git clone [YOUR_REPOSITORY_URL]
+    cd [YOUR_REPOSITORY_NAME]
+    ```
+2.  **Create Virtual Environment:**
+    ```bash
+    python3 -m venv .venv
+    ```
+3.  **Activate Virtual Environment:**
+    - _Linux/macOS:_ `source .venv/bin/activate`
+    - _Windows (PowerShell):_ `.\.venv\Scripts\Activate`
+4.  **Install Dependencies:**
+    ```bash
+    pip install -r requirements.txt
+    ```
+5.  **Run the Application:**
+    ```bash
+    python run.py
+    ```
+
+## ☁️ Deployment (Heroku)
+
+This application is designed to run as a **Worker Dyno** on the Heroku cloud platform, constantly managing the application's logic and data synchronization. This process satisfies **Criterion 9.1** (Deployment to a cloud platform).
+
+### Prerequisites
+
+Before starting the deployment, ensure the following files are committed to your GitHub repository:
+
+1.  **`run.py`** (The main application file)
+2.  **`requirements.txt`** (Contains all Python dependencies)
+3.  **`Procfile`** (Specifies how to run the worker)
+
+### 1. Creating the Procfile
+
+The `Procfile` (no file extension) must be in the root directory. It instructs Heroku on the command to execute to start your CLI application:
+
+```bash
+    python3 -m venv .venv
+```
+
+### 2. Configure Heroku Application
+
+1.  **Create App:** Log in to Heroku and create a new application, connecting it to your GitHub repository.
+2.  **Deployment Method:** Configure automated deployment from your main branch.
+
+### 3. Setting the `CREDS_JSON` Variable (Crucial Step)
+
+Heroku cannot store files like `creds.json`. To grant your deployed app access to Google Sheets, you must securely store the file content as an environment variable.
+
+1.  Go to **Settings** -> **Reveal Config Vars** in your Heroku dashboard.
+2.  **Key:** Enter `CREDS_JSON`.
+3.  **Value:** Copy the **entire text** content of your local `creds.json` file (including all formatting and curly braces `{}`) and paste it here.
+
+### 4. Final Deploy and Launch
+
+1.  **Final Commit:** Ensure all project files, including `Procfile` and the clean `run.py` (free of commented-out code, satisfying **Criterion 9.2**), are committed to GitHub.
+2.  **Deploy:** Trigger a manual or automatic deployment on Heroku.
+3.  **Run Worker Dyno:** After the build is successful, go to the **Resources** tab and ensure the **worker dyno** is turned **On**.
+
+Your To-Do List Manager is now successfully deployed and ready to execute commands via the Heroku worker logs.
