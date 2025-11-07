@@ -335,7 +335,8 @@ def initial_prompt():
         print("q: Quit")
         print("-------------------------")
 
-        choice = input("Enter your choice (1/2/3/q): ").lower().strip()
+        print("Enter your choice (1/2/3/q): ", end="")
+        choice = input().lower().strip()
 
         if choice == '1':
             create_task()
