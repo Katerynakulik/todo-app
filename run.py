@@ -334,7 +334,7 @@ def initial_prompt():
         print("3: Delete a task")
         print("q: Quit")
         print("-------------------------")
-
+        print(flush=True)
         print("Enter your choice (1/2/3/q): ", end="", flush=True)
         choice = input().lower().strip()
 
