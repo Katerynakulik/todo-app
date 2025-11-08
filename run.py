@@ -328,14 +328,14 @@ def initial_prompt():
         display_tasks()
 
         # Offer main options
-        print("\n--- Available Actions ---")
-        print("1: Add a new task")
-        print("2: Change status (Mark as Done/Pending)")
-        print("3: Delete a task")
-        print("q: Quit")
-        print("-------------------------")
+        print("\n--- Available Actions ---", flush=True) 
+        print("1: Add a new task", flush=True)
+        print("2: Change status (Mark as Done/Pending)", flush=True)
+        print("3: Delete a task", flush=True)
+        print("q: Quit", flush=True)
+        print("-------------------------", flush=True)
 
-        print("Enter your choice (1/2/3/q): ", end="")
+        print("Enter your choice (1/2/3/q): ", end="", flush=True)
         choice = input().lower().strip()
 
         if choice == '1':
@@ -363,11 +363,11 @@ def initial_prompt():
 
 # --- APPLICATION START ---
 if __name__ == "__main__":
-    print("Welcome to the To-Do List Manager!")
+    print("Welcome to the To-Do List Manager!", flush=True)
 
     # Attempt to load data at the start
     if load_data_from_sheet():
         initial_prompt()
 
-    print("Application finished.")
+    print("Application finished.", flush=True)
     sys.exit()
