@@ -132,24 +132,27 @@ def get_new_task_details():
     """Prompts the user for a new task's description and priority."""
 
     # 1. Get Task Description
-    task_description = input("Enter task description: ").strip()
-    while not task_description:
-        print("Task description cannot be empty.")
-        task_description = input("Enter task description: ").strip()
+    while True:
+        print("Enter task description: ", end="", flush=True) 
+        task_description = input().strip() # input() без аргументу
+        
+        if task_description:
+            break
+        print("Task description cannot be empty.", flush=True)
 
     # 2. Get Task Priority
     while True:
         try:
-            priority_input = input(
-                "Enter priority (1=HIGH, 2=MEDIUM, 3=LOW): "
-                ).strip()
+            print("Enter priority (1=HIGH, 2=MEDIUM, 3=LOW): ", end="", flush=True)
+            priority_input = input().strip() # input() без аргументу
+            
             priority = int(priority_input)
             if 1 <= priority <= 3:
                 break
             else:
-                print("Priority must be 1, 2, or 3.")
+                print("Priority must be 1, 2, or 3.", flush=True)
         except ValueError:
-            print("Invalid input. Please enter a number (1, 2, or 3).")
+            print("Invalid input. Please enter a number (1, 2, or 3).", flush=True)
 
     return task_description, priority
 
@@ -211,9 +214,8 @@ def update_task_status():
     data and then updates the corresponding cell in the Google Sheet.
     """
     while True:
-        task_id_input = input(
-            "Enter the ID of the task to update (or 'q' to quit): "
-            ).strip()
+        print("Enter the ID of the task to update (or 'q' to quit): ", end="", flush=True)
+        task_id_input = input().strip()
 
         if task_id_input.lower() == 'q':
             print("Status update cancelled.")
@@ -226,10 +228,10 @@ def update_task_status():
         else:
             print(
                 f"Task with ID '{task_id_input}' not found. "
-                f"Please try again."
+                f"Please try again.", flush=True
             )
             continue
-
+          
     # 1. Determine new status and value for the Sheet
     old_status = target_task['done']
     new_status = not old_status
@@ -271,9 +273,8 @@ def delete_task_by_id():
     global TASK_DATA
 
     while True:
-        task_id_input = input(
-            "Enter the ID of the task to DELETE (or 'q' to quit): "
-            ).strip()
+        print("Enter the ID of the task to DELETE (or 'q' to quit): ", end="", flush=True)
+        task_id_input = input().strip()
 
         if task_id_input.lower() == 'q':
             print("Deletion cancelled.")
@@ -335,9 +336,9 @@ def initial_prompt():
         print("q: Quit")
         print("-------------------------")
         print(flush=True)
-        choice = input("Enter your choice (1/2/3/q): ")
+        print("Enter your choice (1/2/3/q): ", end="", flush=True)
+        choice = input().lower().strip()
         
-
         if choice == '1':
             create_task()
 
