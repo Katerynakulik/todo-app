@@ -132,20 +132,17 @@ def get_new_task_details():
     """Prompts the user for a new task's description and priority."""
 
     # 1. Get Task Description
-    while True:
-        print("Enter task description: ", end="", flush=True) 
-        task_description = input().strip() # input() без аргументу
-        
-        if task_description:
-            break
+    task_description = input("Enter task description: ").strip()
+    while not task_description:
         print("Task description cannot be empty.", flush=True)
+        task_description = input("Enter task description: ").strip()
 
     # 2. Get Task Priority
     while True:
         try:
-            print("Enter priority (1=HIGH, 2=MEDIUM, 3=LOW): ", end="", flush=True)
-            priority_input = input().strip() # input() без аргументу
-            
+            priority_input = input(
+                "Enter priority (1=HIGH, 2=MEDIUM, 3=LOW): "
+                ).strip()
             priority = int(priority_input)
             if 1 <= priority <= 3:
                 break
@@ -214,8 +211,9 @@ def update_task_status():
     data and then updates the corresponding cell in the Google Sheet.
     """
     while True:
-        print("Enter the ID of the task to update (or 'q' to quit): ", end="", flush=True)
-        task_id_input = input().strip()
+        task_id_input = input(
+            "Enter the ID of the task to update (or 'q' to quit): "
+            ).strip()
 
         if task_id_input.lower() == 'q':
             print("Status update cancelled.")
@@ -273,8 +271,9 @@ def delete_task_by_id():
     global TASK_DATA
 
     while True:
-        print("Enter the ID of the task to DELETE (or 'q' to quit): ", end="", flush=True)
-        task_id_input = input().strip()
+        task_id_input = input(
+            "Enter the ID of the task to DELETE (or 'q' to quit): "
+            ).strip()
 
         if task_id_input.lower() == 'q':
             print("Deletion cancelled.")
@@ -336,9 +335,8 @@ def initial_prompt():
         print("q: Quit")
         print("-------------------------")
         print(flush=True)
-        print("Enter your choice (1/2/3/q): ", end="", flush=True)
-        choice = input().lower().strip()
-        
+        choice = input("Enter your choice (1/2/3/q): ").lower().strip()
+       
         if choice == '1':
             create_task()
 
