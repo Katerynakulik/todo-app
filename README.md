@@ -53,7 +53,7 @@ The application enters an interactive loop (initial_prompt) where the user can c
 - Input Validation: User input (e.g., priority level, task ID) is checked to handle empty or non-numeric values, preventing application crashes and ensuring a smooth user experience.
 - API Errors: Comprehensive try/except blocks are used to catch critical errors, such as connection failures or API limitations.
 
-## 🖼️ Usage Examples and Manual Testing
+## User Experience, Usage Examples and Manual Testing
 
 The following screenshots demonstrate the core functionalities of the To-Do List Manager in the command-line interface.
 
@@ -90,6 +90,13 @@ This screenshot verifies the successful deletion of a task using its ID, which a
 ![Screenshot showing the application exit prompt](assets/exit.png)
 
 This shows the user successfully exiting the interactive application loop.
+
+### 📝 User Experience (UX) Notes
+
+The application provides a robust console interface. However, when interacting in some virtual terminal environments (like the Gitpod terminal, which uses xterm.js), users might observe a minor visual anomaly related to Input/Output (I/O) buffering:
+
+- I/O Visual Anomaly: When a user enters a blank input and presses Enter (for instance, in the "Enter task description" field), the error message (Task description cannot be empty.) and the re-prompt may appear visually merged or misplaced on the terminal line.
+- Resolution: The application code has been optimized with visual line separators (print("-" \* 25)) after all input validation error messages. This fix ensures that, even if the terminal buffers the output incorrectly, the next prompt or task list view is clearly separated from the error message, providing a better, albeit not perfect, user experience in these specific environments.
 
 ## 🔬 Code Validation (PEP8 Compliance)
 
@@ -173,11 +180,11 @@ The `Procfile` (no file extension) must be in the root directory. It instructs H
 
 ### 3. Setting the `CREDS_JSON` Variable (Crucial Step)
 
-Heroku cannot store files like `creds.json`. To grant your deployed app access to Google Sheets, you must securely store the file content as an environment variable.
+Heroku cannot store files like creds.json. To grant your deployed app access to Google Sheets, you must securely store the file content as an environment variable. The application's initial block automatically checks for the existence of this variable (os.environ.get("CREDS_JSON")) and uses it for authentication if found, falling back to a local creds.json file otherwise.
 
-1.  Go to **Settings** -> **Reveal Config Vars** in your Heroku dashboard.
-2.  **Key:** Enter `CREDS_JSON`.
-3.  **Value:** Copy the **entire text** content of your local `creds.json` file (including all formatting and curly braces `{}`) and paste it here.
+1. Go to Settings -> Reveal Config Vars in your Heroku dashboard.
+2. Key: Enter CREDS_JSON.
+3. Value: Copy the entire text content of your local creds.json file (including all formatting and curly braces {}) and paste it here.
 
 ### 4. Final Deploy and Interaction
 

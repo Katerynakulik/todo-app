@@ -132,24 +132,26 @@ def get_new_task_details():
     """Prompts the user for a new task's description and priority."""
 
     # 1. Get Task Description
-    task_description = input("Enter task description: ").strip()
-    while not task_description:
-        print("Task description cannot be empty.", flush=True)
+    while True:
         task_description = input("Enter task description: ").strip()
+
+        if task_description:
+            break
+        print("Task description cannot be empty.")
 
     # 2. Get Task Priority
     while True:
         try:
             priority_input = input(
                 "Enter priority (1=HIGH, 2=MEDIUM, 3=LOW): "
-                ).strip()
+            ).strip()
             priority = int(priority_input)
             if 1 <= priority <= 3:
                 break
             else:
-                print("Priority must be 1, 2, or 3.", flush=True)
+                print("Priority must be 1, 2, or 3.")
         except ValueError:
-            print("Invalid input. Please enter a number (1, 2, or 3).", flush=True)
+            print("Invalid input. Please enter a number (1, 2, or 3).")
 
     return task_description, priority
 
@@ -224,12 +226,13 @@ def update_task_status():
         if target_task:
             break
         else:
-            print(
+            print((
                 f"Task with ID '{task_id_input}' not found. "
-                f"Please try again.", flush=True
-            )
+                "Please try again."
+            ))
+            print("-" * 25)
             continue
-          
+
     # 1. Determine new status and value for the Sheet
     old_status = target_task['done']
     new_status = not old_status
@@ -284,8 +287,11 @@ def delete_task_by_id():
         if target_task:
             break
         else:
-            print(f"Task with ID '{task_id_input}' not found.")
-            print(" Please try again.")
+            print((
+                f"Task with ID '{task_id_input}' not found. "
+                "Please try again."
+            ))
+            print("-" * 25)
             continue
 
     task_id = target_task['id']
@@ -334,10 +340,8 @@ def initial_prompt():
         print("3: Delete a task")
         print("q: Quit")
         print("-------------------------")
-        print(flush=True)
-        print("Enter your choice (1/2/3/q): ", end="", flush=True)
-        choice = input().lower().strip()
-       
+        choice = input("Enter your choice (1/2/3/q): ").lower().strip()
+
         if choice == '1':
             create_task()
 
