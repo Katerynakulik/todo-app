@@ -328,15 +328,14 @@ def initial_prompt():
         display_tasks()
 
         # Offer main options
-        print("\n--- Available Actions ---", flush=True) 
-        print("1: Add a new task", flush=True)
-        print("2: Change status (Mark as Done/Pending)", flush=True)
-        print("3: Delete a task", flush=True)
-        print("q: Quit", flush=True)
-        print("-------------------------", flush=True)
+        print("\n--- Available Actions ---")
+        print("1: Add a new task")
+        print("2: Change status (Mark as Done/Pending)")
+        print("3: Delete a task")
+        print("q: Quit")
+        print("-------------------------")
 
-        print("Enter your choice (1/2/3/q): ", end="", flush=True)
-        choice = input().lower().strip()
+        choice = input("Enter your choice (1/2/3/q): ").lower().strip()
 
         if choice == '1':
             create_task()
